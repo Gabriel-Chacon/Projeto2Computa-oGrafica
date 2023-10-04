@@ -1,16 +1,17 @@
 #include "window.hpp"
 #include <cmath>
-bool pointSelected = false;
+bool pointCirculo = false;
+bool pointEspiral = false;
 float newPointX = 0.0f;     
 float newPointY = 0.0f;
 float newAngulo = 0.0f;
 float newRadius = 0.0f;
+float newTm = 1.0f;
 float radius = 0.1f;
 float angle = 0.0f;
-
+float Tm = 1.0f;
 void Window::onCreate() {
 
-  pointSelected = false;
   auto const *vertexShader{R"gl(#version 300 es
     layout(location = 0) in vec2 inPosition;
 
@@ -53,19 +54,26 @@ void Window::onCreate() {
 
   // Randomly pick a pair of coordinates in the range [-1; 1)
   std::uniform_real_distribution<float> realDistribution(-1.0f, 1.0f);
-  //m_P.x = realDistribution(m_randomEngine);
-  //m_P.y = realDistribution(m_randomEngine);
 }
 
 
 
 void Window::onPaint() {
+  if(pointEspiral == true){
+    //Funções para desenho de uma circunferência que vai incrementando ou diminuindo
+     m_P.x = radius * std ::cos(angle);
+     m_P.y = radius * std :: sin(angle);
+     angle += (2.0 * M_PI) / 2.0 * getDeltaTime();
+     radius += 0.02 * getDeltaTime();
+  }else if (pointCirculo == true){
+     m_P.x = std ::cos(angle)/ Tm;
+     m_P.y = std :: sin(angle)/Tm;
+     angle += (2 * M_PI) / 2 * getDeltaTime();
+  }else {
+    m_P.x = 0.0;
+    m_P.y = 0.0;
+  }
   
-  //Funções para desenho de uma circunferência que vai incrementando ou diminuindo
-  m_P.x = radius * std ::cos(angle);
-  m_P.y = radius * std :: sin(angle);
-  angle += (2.0 * M_PI) / 2.0 * getDeltaTime();
-  radius += 0.01 * getDeltaTime();
   
   // Create OpenGL buffers for drawing the point at m_P
   setupModel();
@@ -138,26 +146,38 @@ void Window::setupModel() {
 void Window::onPaintUI() {
   abcg::OpenGLWindow::onPaintUI();
     // Comece a janela ImGui
-    ImGui::SetNextWindowSize(ImVec2(200, 90));
+    ImGui::SetNextWindowSize(ImVec2(200, 220));
     ImGui::SetNextWindowPos(ImVec2(5, 90));
     ImGui::Begin("Selecionar Ponto Inicial", nullptr, ImGuiWindowFlags_NoDecoration);
 
     // Adicione controles ImGui para selecionar as coordenadas do ponto inicial
-    ImGui::SliderFloat("Angulo", &newRadius, -1.0f, 1.0f);
-    ImGui::SliderFloat("Radius", &newAngulo, -1.0f, 1.0f);
+    ImGui::SliderFloat("Radius", &newRadius, -1.0f, 1.0f);
+    ImGui::SliderFloat("TM", &newTm, 1.0f, 4.0f);
 
     // Verifique se as coordenadas estão dentro do intervalo [-1, 1)
     newRadius = std::max(-1.0f, std::min(1.0f, newRadius));
-    newAngulo = std::max(-1.0f, std::min(1.0f, newAngulo));
-    
+    newTm = std::max(1.0f, std::min(4.0f, newTm));
     // Se o botão "Confirmar" for clicado, marque a variável de controle como verdadeira
     if (ImGui::Button("Confirmar", ImVec2(150, 30))) {
       // Atualize as coordenadas do ponto inicial com os novos valores
       radius = newRadius;
-      angle = newAngulo;
-      //radius = 0.1f;
-      //angle = 0.0f;
+      Tm = newTm;
       abcg::glClear(GL_COLOR_BUFFER_BIT);
+    }
+    if (ImGui::Button("Circulo", ImVec2(150, 40))){
+        pointEspiral = false;
+        pointCirculo = true;
+        abcg::glClear(GL_COLOR_BUFFER_BIT);
+    }
+    if (ImGui::Button("Espiral", ImVec2(150, 50))){
+        pointEspiral = true;
+        pointCirculo = false;
+        abcg::glClear(GL_COLOR_BUFFER_BIT);
+    }
+    if (ImGui::Button("Reset", ImVec2(150, 60))){
+        pointEspiral = false;
+        pointCirculo = false;
+        abcg::glClear(GL_COLOR_BUFFER_BIT);
     }
 
     // Fim da janela ImGui
