@@ -1,6 +1,16 @@
 #include "window.hpp"
+#include <cmath>
+bool pointSelected = false;
+float newPointX = 0.0f;     
+float newPointY = 0.0f;
+float newAngulo = 0.0f;
+float newRadius = 0.0f;
+float radius = 0.1f;
+float angle = 0.0f;
 
 void Window::onCreate() {
+
+  pointSelected = false;
   auto const *vertexShader{R"gl(#version 300 es
     layout(location = 0) in vec2 inPosition;
 
@@ -43,22 +53,30 @@ void Window::onCreate() {
 
   // Randomly pick a pair of coordinates in the range [-1; 1)
   std::uniform_real_distribution<float> realDistribution(-1.0f, 1.0f);
-  m_P.x = realDistribution(m_randomEngine);
-  m_P.y = realDistribution(m_randomEngine);
+  //m_P.x = realDistribution(m_randomEngine);
+  //m_P.y = realDistribution(m_randomEngine);
 }
 
+
+
 void Window::onPaint() {
+  
+  //Funções para desenho de uma circunferência que vai incrementando ou diminuindo
+  m_P.x = radius * std ::cos(angle);
+  m_P.y = radius * std :: sin(angle);
+  angle += (2.0 * M_PI) / 2.0 * getDeltaTime();
+  radius += 0.01 * getDeltaTime();
+  
   // Create OpenGL buffers for drawing the point at m_P
   setupModel();
+  
 
-  // Set the viewport
-  abcg::glViewport(0, 0, m_viewportSize.x, m_viewportSize.y);
-
-  // Start using the shader program
+  // Start using the shader programS
   abcg::glUseProgram(m_program);
   // Start using VAO
   abcg::glBindVertexArray(m_VAO);
-
+  
+  
   // Draw a single point
   abcg::glDrawArrays(GL_POINTS, 0, 1);
 
@@ -67,16 +85,7 @@ void Window::onPaint() {
   // End using the shader program
   abcg::glUseProgram(0);
 
-  // Randomly pick the index of a triangle vertex
-  std::uniform_int_distribution<int> intDistribution(0, m_points.size() - 1);
-  auto const index{intDistribution(m_randomEngine)};
-
-  // The new position is the midpoint between the current position and the
-  // chosen vertex position
-  m_P = (m_P + m_points.at(index)) / 2.0f;
-
-  // Print coordinates to console
-  // fmt::print("({:+.2f}, {:+.2f})\n", m_P.x, m_P.y);
+  
 }
 
 void Window::onResize(glm::ivec2 const &size) {
@@ -125,17 +134,36 @@ void Window::setupModel() {
   // End of binding to current VAO
   abcg::glBindVertexArray(0);
 }
+
 void Window::onPaintUI() {
   abcg::OpenGLWindow::onPaintUI();
+    // Comece a janela ImGui
+    ImGui::SetNextWindowSize(ImVec2(200, 90));
+    ImGui::SetNextWindowPos(ImVec2(5, 90));
+    ImGui::Begin("Selecionar Ponto Inicial", nullptr, ImGuiWindowFlags_NoDecoration);
 
-  {
-    ImGui::SetNextWindowPos(ImVec2(5, 81));
-    ImGui::Begin(" ", nullptr, ImGuiWindowFlags_NoDecoration);
+    // Adicione controles ImGui para selecionar as coordenadas do ponto inicial
+    ImGui::SliderFloat("Angulo", &newRadius, -1.0f, 1.0f);
+    ImGui::SliderFloat("Radius", &newAngulo, -1.0f, 1.0f);
 
-    if (ImGui::Button("Clear window", ImVec2(150, 30))) {
+    // Verifique se as coordenadas estão dentro do intervalo [-1, 1)
+    newRadius = std::max(-1.0f, std::min(1.0f, newRadius));
+    newAngulo = std::max(-1.0f, std::min(1.0f, newAngulo));
+    
+    // Se o botão "Confirmar" for clicado, marque a variável de controle como verdadeira
+    if (ImGui::Button("Confirmar", ImVec2(150, 30))) {
+      // Atualize as coordenadas do ponto inicial com os novos valores
+      radius = newRadius;
+      angle = newAngulo;
+      //radius = 0.1f;
+      //angle = 0.0f;
       abcg::glClear(GL_COLOR_BUFFER_BIT);
     }
 
+    // Fim da janela ImGui
     ImGui::End();
-  }
+  
+  
+  
 }
+
