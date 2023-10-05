@@ -10,6 +10,7 @@ float newTm = 1.0f;
 float radius = 0.1f;
 float angle = 0.0f;
 float Tm = 1.0f;
+
 void Window::onCreate() {
 
   auto const *vertexShader{R"gl(#version 300 es
@@ -59,6 +60,8 @@ void Window::onCreate() {
 
 
 void Window::onPaint() {
+  
+  
   if(pointEspiral == true){
     //Funções para desenho de uma circunferência que vai incrementando ou diminuindo
      m_P.x = radius * std ::cos(angle);
@@ -145,8 +148,8 @@ void Window::setupModel() {
 
 void Window::onPaintUI() {
   abcg::OpenGLWindow::onPaintUI();
-    // Comece a janela ImGui
-    ImGui::SetNextWindowSize(ImVec2(200, 220));
+    //Tamanho do Bloco
+    ImGui::SetNextWindowSize(ImVec2(200, 270));
     ImGui::SetNextWindowPos(ImVec2(5, 90));
     ImGui::Begin("Selecionar Ponto Inicial", nullptr, ImGuiWindowFlags_NoDecoration);
 
