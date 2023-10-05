@@ -1,4 +1,5 @@
 #include "window.hpp"
+#include <algorithm>
 #include <cmath>
 bool pointCirculo = false;
 bool pointEspiral = false;
@@ -69,8 +70,8 @@ void Window::onPaint() {
      angle += (2.0 * M_PI) / 2.0 * getDeltaTime();
      radius += 0.02 * getDeltaTime();
   }else if (pointCirculo == true){
-     m_P.x = std ::cos(angle)/ Tm;
-     m_P.y = std :: sin(angle)/Tm;
+     m_P.x = std ::cos(angle)* Tm;
+     m_P.y = std :: sin(angle)*Tm;
      angle += (2 * M_PI) / 2 * getDeltaTime();
   }else {
     m_P.x = 0.0;
@@ -81,7 +82,15 @@ void Window::onPaint() {
   // Create OpenGL buffers for drawing the point at m_P
   setupModel();
   
+  
+ 
+  int minSize = std::min(m_viewportSize.x, m_viewportSize.y);
+  int x = (m_viewportSize.x - minSize) / 2;
+  int y = (m_viewportSize.y - minSize) / 2;
 
+  abcg::glViewport(x, y, minSize, minSize);
+ 
+   
   // Start using the shader programS
   abcg::glUseProgram(m_program);
   // Start using VAO
@@ -155,11 +164,11 @@ void Window::onPaintUI() {
 
     // Adicione controles ImGui para selecionar as coordenadas do ponto inicial
     ImGui::SliderFloat("Radius", &newRadius, -1.0f, 1.0f);
-    ImGui::SliderFloat("TM", &newTm, 1.0f, 4.0f);
+    ImGui::SliderFloat("Tamanho", &newTm, 0.0f, 1.0f);
 
     // Verifique se as coordenadas estão dentro do intervalo [-1, 1)
     newRadius = std::max(-1.0f, std::min(1.0f, newRadius));
-    newTm = std::max(1.0f, std::min(4.0f, newTm));
+    newTm = std::max(0.0f, std::min(1.0f, newTm));
     // Se o botão "Confirmar" for clicado, marque a variável de controle como verdadeira
     if (ImGui::Button("Confirmar", ImVec2(150, 30))) {
       // Atualize as coordenadas do ponto inicial com os novos valores
@@ -178,8 +187,10 @@ void Window::onPaintUI() {
         abcg::glClear(GL_COLOR_BUFFER_BIT);
     }
     if (ImGui::Button("Reset", ImVec2(150, 60))){
-        pointEspiral = false;
-        pointCirculo = false;
+        newRadius = 0.0;
+        newTm = 1.0;
+        radius = 0.1f;
+        Tm = 1.0f;
         abcg::glClear(GL_COLOR_BUFFER_BIT);
     }
 
