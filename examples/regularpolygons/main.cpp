@@ -6,11 +6,11 @@ int main(int argc, char **argv) {
 
     Window window;
     window.setOpenGLSettings({.samples = 2, .doubleBuffering = false});
-    //Local onde defini o nome da tela
-    window.setWindowSettings({.width = 600,
-                              .height = 600,
-                              .showFullscreenButton = true,
-                              .title = "Projeto1-Formas2D"});
+    window.setWindowSettings({
+        .width = 600,
+        .height = 600,
+        .title = "Regular Polygons",
+    });
 
     app.run(window);
   } catch (std::exception const &exception) {
