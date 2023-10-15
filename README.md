@@ -9,7 +9,7 @@ Nome: Tiago Cornetta Campos RA:11201922123
 
 Caro professor tivemos alguns problemas ao tentar rodar no windows.
 
-No meu windows (Tiago Cornetta Campos) e celular os botões algumas vezes não apareciam.
+No meu windows (Tiago Cornetta Campos) e celular os botões algumas vezes não apareciam, mas teve vezes que apareceram.
 
 De preferência abrir em um navegador no linux:
 
