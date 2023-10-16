@@ -41,5 +41,15 @@ https://cornettawebdesigner.github.io/Projeto1ComputacaoGrafica/
   	7 - (Delay): Definira a velocidade com que os pontos são plotados na tela.
 
 **COMO FOI IMPLEMENTADO:**
+
+- Nos baseamos no exemplo dos Polígonos regulares para criação de pontos coloridos e de várias formas, para que seja formado um circulo ou uma espiral na tela.
+- As funções em que fizemos as mudanças foram:
   
+          - window.hpp : foi criado as variáveis que vão ser utilizadas na onPaint.
+
+          - onPaint : para geração dos pontos nas cordenadas certas para que seja foramda uma espiral ou um circulo.
+
+          - onPaintUI : para criação dos botões que aparecem na tela, para alterar os valores das váriaveis que são
+          utilizados dentro da função onPaint, desse modo é possível alterar tamanho, velocidade, qual forma a ser
+          apresentada, entre outras coisas dos pontos a serem printados na tela. 
   
