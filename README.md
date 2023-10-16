@@ -12,7 +12,7 @@ De preferência abrir em um navegador no linux:
 
 https://cornettawebdesigner.github.io/Projeto1ComputacaoGrafica/
 
-EXPLICAÇÃO DO PROJETO
+**DESCRIÇÃO DO PROJETO**
 
 - O projeto consiste na crianção de duas formas geométricas, um circulo e uma espiral.
 - Cada ponto desenhado na tela será feito em uma cor aleatório e dado por uma forma geométrica, exemplo: a representação de um ponto pode ser um circulo, triângulo, etc.
@@ -39,3 +39,7 @@ EXPLICAÇÃO DO PROJETO
   	6 - (Scale): Definira o tamanho dos pontos.
 
   	7 - (Delay): Definira a velocidade com que os pontos são plotados na tela.
+
+**COMO FOI IMPLEMENTADO:**
+  
+  
