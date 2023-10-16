@@ -18,9 +18,9 @@ EXPLICAÇÃO DO PROJETO
 - Cada ponto desenhado na tela será feito em uma cor aleatório e dado por uma forma geométrica, exemplo: a representação de um ponto pode ser um circulo, triângulo, etc.
 - O usuário poderão selecionar alguns botões durante o uso da aplicação no qual consistem na seguinte funcionalidade:
   
-  	*1 - (Circulo): O usuário defini que os pontos desenhados formaram a figura de um circulo.	
+  	**1 - (Circulo): O usuário defini que os pontos desenhados formaram a figura de um circulo.	
 
-  		*1.1 -(Radius): O usuário definira o tamanho do circulo. 
+    		**1.1 -(Radius): O usuário definira o tamanho do circulo. 
 
   	*2 - (Espiral): O usuário defini que os pontos formaram uma espiral.
 
