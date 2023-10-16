@@ -22,7 +22,7 @@ EXPLICAÇÃO DO PROJETO
 
     		##1.1 -(Radius): O usuário definira o tamanho do circulo. 
 
-  	*2.0 - (Espiral): O usuário defini que os pontos formaram uma espiral.
+  	2.0 - (Espiral): O usuário defini que os pontos formaram uma espiral.
 
   		2.1 - (+): O usuário definira que a espiral abrirá para fora.
 
