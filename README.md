@@ -16,7 +16,7 @@ https://cornettawebdesigner.github.io/Projeto1ComputacaoGrafica/
 
 - O projeto consiste na crianção de duas formas geométricas, um circulo e uma espiral.
 - Cada ponto desenhado na tela será feito em uma cor aleatório e dado por uma forma geométrica, exemplo: a representação de um ponto pode ser um circulo, triângulo, etc.
-- O usuário poderão selecionar alguns botões durante o uso da aplicação no qual consistem na seguinte funcionalidade:
+- O usuário podera selecionar alguns botões durante o uso da aplicação no qual consistem na seguinte funcionalidade:
   
   	1.0 - (Circulo): O usuário defini que os pontos desenhados formaram a figura de um circulo.	
 
