@@ -1,6 +1,22 @@
 #include "window.hpp"
 
 #include <unordered_map>
+#include <random> 
+
+//Inicializadores Random para casasQuadrados
+std::random_device rd;
+std::mt19937 gen(rd());
+std::uniform_real_distribution<float> floatDistribution(0.0, 1.0);
+
+float colorV0 = floatDistribution(gen);
+float colorV1 = floatDistribution(gen);
+float colorV2 = floatDistribution(gen);
+float colorV3 = floatDistribution(gen);
+
+//Para casa colorida
+std::uniform_real_distribution<float> floatDistribution2(0.0, 10.0);
+
+
 
 // Explicit specialization of std::hash for Vertex
 template <> struct std::hash<Vertex> {
@@ -47,6 +63,8 @@ void Window::onEvent(SDL_Event const &event) {
 }
 
 void Window::onCreate() {
+  
+  
   auto const &assetsPath{abcg::Application::getAssetsPath()};
 
   abcg::glClearColor(0, 0, 0, 1);
@@ -70,7 +88,7 @@ void Window::onCreate() {
   m_colorLocation = abcg::glGetUniformLocation(m_program, "color");
 
   // Load model
-  loadModelFromFile(assetsPath + "bunny.obj");
+  loadModelFromFile(assetsPath + "box.obj");
 
   // Generate VBO
   abcg::glGenBuffers(1, &m_VBO);
@@ -161,6 +179,12 @@ void Window::loadModelFromFile(std::string_view path) {
 }
 
 void Window::onPaint() {
+  float colorColorida1 = floatDistribution2(gen);
+  float colorColorida2 = floatDistribution2(gen);
+  float colorColorida3 = floatDistribution2(gen);
+  float colorColorida4 = floatDistribution2(gen);
+
+  
   // Clear color buffer and depth buffer
   abcg::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -177,48 +201,136 @@ void Window::onPaint() {
 
   abcg::glBindVertexArray(m_VAO);
 
-  // Draw white bunny
+  // Parte da esquerda do muralha
   glm::mat4 model{1.0f};
-  model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 0.0f));
+  model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
   model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0, 1, 0));
-  model = glm::scale(model, glm::vec3(0.5f));
-
+  model = glm::scale(model, glm::vec3(0.5f, 1.5f, 0.5f));
+  abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
+  abcg::glUniform4f(m_colorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
+  abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
+                       nullptr);
+  
+  // Parte do meio do muralha
+  model = glm::mat4(1.0);
+  model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));
+  model = glm::scale(model, glm::vec3(1.5f, 1.0f, 0.5f));
   abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
   abcg::glUniform4f(m_colorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
   abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
                        nullptr);
 
-  // Draw yellow bunny
+  // Parte da direita muralha
   model = glm::mat4(1.0);
-  model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));
-  model = glm::scale(model, glm::vec3(0.5f));
-
-  abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
-  abcg::glUniform4f(m_colorLocation, 1.0f, 0.8f, 0.0f, 1.0f);
-  abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
-                       nullptr);
-
-  // Draw blue bunny
-  model = glm::mat4(1.0);
-  model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f));
+  model = glm::translate(model, glm::vec3(1.0f, 0.0f, -1.0f));
   model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
-  model = glm::scale(model, glm::vec3(0.5f));
-
+  model = glm::scale(model, glm::vec3(0.5f, 1.5f, 0.5f));
   abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
-  abcg::glUniform4f(m_colorLocation, 0.0f, 0.8f, 1.0f, 1.0f);
+  abcg::glUniform4f(m_colorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
   abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
                        nullptr);
 
-  // Draw red bunny
+  //Muro da esquerda
   model = glm::mat4(1.0);
-  model = glm::scale(model, glm::vec3(0.1f));
-
+  model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -2.0f));
+  model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+  model = glm::scale(model, glm::vec3(0.5f, 1.5f, 1.5f));
   abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
-  abcg::glUniform4f(m_colorLocation, 1.0f, 0.25f, 0.25f, 1.0f);
+  abcg::glUniform4f(m_colorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
   abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
                        nullptr);
+
+  //Muro da direita
+  model = glm::mat4(1.0);
+  model = glm::translate(model, glm::vec3(1.0f, 0.0f, -2.0f));
+  model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+  model = glm::scale(model, glm::vec3(0.5f, 1.5f, 1.5f));
+  abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
+  abcg::glUniform4f(m_colorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
+  abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
+                       nullptr);
+
+
+  //Casa colorida
+  model = glm::mat4(1.0);
+  model = glm::translate(model, glm::vec3(0.0f, 0.0f, -5.0f));
+  model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+  model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+  abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
+  abcg::glUniform4f(m_colorLocation, colorColorida1,colorColorida2,colorColorida3,colorColorida4);
+  abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
+                       nullptr);
+
+
+  
+  //Casa da esquerda
+  float aux = 0.0;
+  for(int i = -4 ; i < 7; i++){
+  
+      model = glm::mat4(1.0);
+      model = glm::translate(model, glm::vec3(-2.0f, 0.0f, - 1.0f + i));
+      model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+      model = glm::scale(model, glm::vec3(0.5f, 1.0f, 0.5f));
+      abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
+      abcg::glUniform4f(m_colorLocation, colorV0 + aux , colorV1*i, colorV2 -aux +i, colorV3+aux);
+      abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
+                       nullptr);
+      aux +=0.1;
+    }
+
+  
+  
+  //Casa da esquerda + 2
+  
+  for(int i = -4 ; i < 7; i++){
+  
+      model = glm::mat4(1.0);
+      model = glm::translate(model, glm::vec3(-4.0f, 0.0f, - 1.0f + i));
+      model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+      model = glm::scale(model, glm::vec3(0.5f, 1.0f, 0.5f));
+      abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
+      abcg::glUniform4f(m_colorLocation, colorV0 + aux , colorV1*i, colorV2 -aux +i, colorV3+aux);
+      abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
+                       nullptr);
+      aux +=0.1;
+    }
+
+
+
+  //CasaDireita
+  aux =0.0;
+  for(int i = -4 ; i < 7; i++){
+  
+      model = glm::mat4(1.0);
+      model = glm::translate(model, glm::vec3(2.0f, 0.0f, - 1.0f + i));
+      model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+      model = glm::scale(model, glm::vec3(0.5f, 1.0f, 0.5f));
+      abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
+      abcg::glUniform4f(m_colorLocation, colorV0 + aux , colorV1, colorV2 +aux, colorV3+aux);
+      abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
+                       nullptr);
+      aux +=0.2;
+    }
+  
+  //CasaDireita +2 
+  aux =0.0;
+  for(int i = -4 ; i < 7; i++){
+  
+      model = glm::mat4(1.0);
+      model = glm::translate(model, glm::vec3(4.0f, 0.0f, - 1.0f + i));
+      model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+      model = glm::scale(model, glm::vec3(0.5f, 1.0f, 0.5f));
+      abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
+      abcg::glUniform4f(m_colorLocation, colorV0 + aux , colorV1, colorV2 +aux, colorV3+aux);
+      abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
+                       nullptr);
+      aux +=0.2;
+    }
+  
 
   abcg::glBindVertexArray(0);
+
+
 
   // Draw ground
   m_ground.paint();
