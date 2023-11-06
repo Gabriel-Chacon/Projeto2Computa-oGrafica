@@ -17,6 +17,13 @@ float colorV3 = floatDistribution(gen);
 std::uniform_real_distribution<float> floatDistribution2(0.0, 10.0);
 
 
+//Para aumentar e diminuir a escala do bloco colorido
+float scaleObjetoColorido = 1.0f;  // Escala inicial
+float scaleSpeed = 0.2f;  // Velocidade de crescimento e diminuição
+
+//Para aumentar os restos dos blocos
+float scaleMuro = 0.5f;
+float scaleSpeedMuro = 0.3f;
 
 // Explicit specialization of std::hash for Vertex
 template <> struct std::hash<Vertex> {
@@ -244,7 +251,7 @@ void Window::onPaint() {
   model = glm::mat4(1.0);
   model = glm::translate(model, glm::vec3(1.0f, 0.0f, -2.0f));
   model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
-  model = glm::scale(model, glm::vec3(0.5f, 1.5f, 1.5f));
+  model = glm::scale(model, glm::vec3(0.5, 1.5f, 1.5f));
   abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
   abcg::glUniform4f(m_colorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
   abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
@@ -255,7 +262,7 @@ void Window::onPaint() {
   model = glm::mat4(1.0);
   model = glm::translate(model, glm::vec3(0.0f, 0.0f, -5.0f));
   model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
-  model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+  model = glm::scale(model, glm::vec3(0.5f, scaleObjetoColorido, 0.5f));
   abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
   abcg::glUniform4f(m_colorLocation, colorColorida1,colorColorida2,colorColorida3,colorColorida4);
   abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
@@ -270,7 +277,7 @@ void Window::onPaint() {
       model = glm::mat4(1.0);
       model = glm::translate(model, glm::vec3(-2.0f, 0.0f, - 1.0f + i));
       model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
-      model = glm::scale(model, glm::vec3(0.5f, 1.0f, 0.5f));
+      model = glm::scale(model, glm::vec3(scaleMuro, 1.0f, 0.5f));
       abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
       abcg::glUniform4f(m_colorLocation, colorV0 + aux , colorV1*i, colorV2 -aux +i, colorV3+aux);
       abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
@@ -287,7 +294,7 @@ void Window::onPaint() {
       model = glm::mat4(1.0);
       model = glm::translate(model, glm::vec3(-4.0f, 0.0f, - 1.0f + i));
       model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
-      model = glm::scale(model, glm::vec3(0.5f, 1.0f, 0.5f));
+      model = glm::scale(model, glm::vec3(scaleMuro, 1.0f, 0.5f));
       abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
       abcg::glUniform4f(m_colorLocation, colorV0 + aux , colorV1*i, colorV2 -aux +i, colorV3+aux);
       abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
@@ -304,7 +311,7 @@ void Window::onPaint() {
       model = glm::mat4(1.0);
       model = glm::translate(model, glm::vec3(2.0f, 0.0f, - 1.0f + i));
       model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
-      model = glm::scale(model, glm::vec3(0.5f, 1.0f, 0.5f));
+      model = glm::scale(model, glm::vec3(scaleMuro, 1.0f, 0.5f));
       abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
       abcg::glUniform4f(m_colorLocation, colorV0 + aux , colorV1, colorV2 +aux, colorV3+aux);
       abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
@@ -319,7 +326,7 @@ void Window::onPaint() {
       model = glm::mat4(1.0);
       model = glm::translate(model, glm::vec3(4.0f, 0.0f, - 1.0f + i));
       model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
-      model = glm::scale(model, glm::vec3(0.5f, 1.0f, 0.5f));
+      model = glm::scale(model, glm::vec3(scaleMuro, 1.0f, 0.5f));
       abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
       abcg::glUniform4f(m_colorLocation, colorV0 + aux , colorV1, colorV2 +aux, colorV3+aux);
       abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
@@ -356,6 +363,24 @@ void Window::onDestroy() {
 
 void Window::onUpdate() {
   auto const deltaTime{gsl::narrow_cast<float>(getDeltaTime())};
+
+
+  // Atualize a escala
+  scaleObjetoColorido += scaleSpeed * deltaTime;
+  scaleMuro += scaleSpeedMuro * deltaTime;
+
+  // Inverte a direção se a escala atingir limites
+  if (scaleObjetoColorido >= 1.5f || scaleObjetoColorido <= 0.5f) {
+    scaleSpeed = -scaleSpeed;
+  }
+  if (scaleMuro >= 1.0f || scaleMuro <= 0.5f) {
+    scaleSpeedMuro = -scaleSpeedMuro;
+  }
+
+
+  // Restrinja a escala dentro de limites
+  scaleObjetoColorido = std::max(0.5f, std::min(2.5f, scaleObjetoColorido));
+  scaleMuro = std::max(0.5f, std::min(1.0f, scaleMuro));
 
   // Update LookAt camera
   m_camera.dolly(m_dollySpeed * deltaTime);
