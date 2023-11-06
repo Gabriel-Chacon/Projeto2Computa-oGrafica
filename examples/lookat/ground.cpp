@@ -34,6 +34,32 @@ void Ground::create(GLuint program) {
 void Ground::paint() {
   abcg::glBindVertexArray(m_VAO);
 
+  // Draw a grid of 2N+1 x 2N+1 tiles on the xz plane, centered around the origin
+  auto const N{5};
+  for (auto const z : iter::range(-N, N + 1)) {
+    for (auto const x : iter::range(-N, N + 1)) {
+      // Set model matrix as a translation matrix
+      glm::mat4 model{1.0f};
+      model = glm::translate(model, glm::vec3(x, 0.0f, z));
+      abcg::glUniformMatrix4fv(m_modelMatrixLoc, 1, GL_FALSE, &model[0][0]);
+
+      // Calculate colors based on the position
+      auto const red{std::abs(x) % 2 == 0 ? 1.0f : 0.1f};
+      auto const green{std::abs(z) % 2 == 0 ? 0.9f : 0.1f};
+      abcg::glUniform4f(m_colorLoc, red, green, 0.0f, 1.0f);
+
+      abcg::glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    }
+  }
+
+  abcg::glBindVertexArray(0);
+}
+
+
+/*
+void Ground::paint() {
+  abcg::glBindVertexArray(m_VAO);
+
   // Draw a grid of 2N+1 x 2N+1 tiles on the xz plane, centered around the
   // origin
   auto const N{5};
@@ -54,7 +80,7 @@ void Ground::paint() {
 
   abcg::glBindVertexArray(0);
 }
-
+*/
 void Ground::destroy() {
   abcg::glDeleteBuffers(1, &m_VBO);
   abcg::glDeleteVertexArrays(1, &m_VAO);

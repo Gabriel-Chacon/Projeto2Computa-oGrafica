@@ -24,6 +24,11 @@ float scaleSpeed = 0.2f;  // Velocidade de crescimento e diminuição
 //Para aumentar os restos dos blocos
 float scaleMuro = 0.5f;
 float scaleSpeedMuro = 0.3f;
+float scaleSpeedRotacao = 0.3f;
+
+//Para rotacionar o cubo
+float rotationAngle = glm::radians(0.0f); // Ângulo de rotação (sentido horário)
+
 
 // Explicit specialization of std::hash for Vertex
 template <> struct std::hash<Vertex> {
@@ -334,7 +339,17 @@ void Window::onPaint() {
       aux +=0.2;
     }
   
+   // Parte do meio do muralha
 
+  model = glm::mat4(1.0);
+  model = glm::translate(model, glm::vec3(0.0f, 1.0f, 3.0f));
+  model = glm::scale(model, glm::vec3(1.0f, 0.5f, 0.5f));
+  model = glm::rotate(model, rotationAngle, glm::vec3(0, 1, 0));
+  abcg::glUniformMatrix4fv(m_modelMatrixLocation, 1, GL_FALSE, &model[0][0]);
+  abcg::glUniform4f(m_colorLocation, 1.0f, 1.0f, 0.0f, 1.0f);
+  abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, nullptr);
+  
+  
   abcg::glBindVertexArray(0);
 
 
@@ -369,13 +384,23 @@ void Window::onUpdate() {
   scaleObjetoColorido += scaleSpeed * deltaTime;
   scaleMuro += scaleSpeedMuro * deltaTime;
 
-  // Inverte a direção se a escala atingir limites
+  // Tamanho objeto colorido
   if (scaleObjetoColorido >= 1.5f || scaleObjetoColorido <= 0.5f) {
     scaleSpeed = -scaleSpeed;
   }
+  //Tamanho cada quadrado
   if (scaleMuro >= 1.0f || scaleMuro <= 0.5f) {
     scaleSpeedMuro = -scaleSpeedMuro;
   }
+
+  // Rotação do objeto no ar
+  rotationAngle += scaleSpeedRotacao * deltaTime;
+  if (rotationAngle >= glm::radians(360.0f)) {
+      rotationAngle -= glm::radians(360.0f);
+  }
+
+
+ 
 
 
   // Restrinja a escala dentro de limites
